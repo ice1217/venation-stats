@@ -3,6 +3,7 @@ import os
 import pymongo
 from datetime import datetime
 import pytz
+from pytz import timezone
 
 mongodb_url = os.environ["MONGODB_URL"]
 mongodb_db = os.environ["MONGODB_DB"]
@@ -36,10 +37,11 @@ async def on_message(message):
     return
 
   else:
+    postingdate = message.created_at.replace(tzinfo=timezone('Asia/Jakarta'))
     message_json = {
       'author': message.author.name,
       'channel': message.channel.name,
-      'postingdate': message.created_at.__str__(),
+      'postingdate': postingdate.__str__(),
       'content': message.content
     }
     col = db[mongodb_message_col]
